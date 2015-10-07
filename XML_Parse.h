@@ -43,6 +43,11 @@
 #include <iostream>
 using namespace std;
 
+// tyx added it for more core simulation
+#ifndef MAX_NUM_OF_CORE
+#define MAX_NUM_OF_CORE  2048   //FIXME: Is 2048 enough?
+#endif
+
 /*
 void myfree(char *t); // {free(t);}
 ToXMLStringTool tx,tx2;
@@ -152,6 +157,7 @@ typedef struct{
 } BTB_systemcore;
 typedef struct{
 	//all params at the level of system.core(0-n)
+        int core_type;  // default 1 for homogeneouse
 	int clock_rate;
 	bool opt_local;
 	bool x86;
@@ -536,6 +542,8 @@ typedef struct{
 } system_pcie;
 
 typedef struct{
+        // TYX :: added type of core for further heterogeneous core 
+        int number_of_core_types;
 	//All number_of_* at the level of 'system' Ying 03/21/2009
 	int number_of_cores;
 	int number_of_L1Directories;
@@ -582,12 +590,12 @@ typedef struct{
     double vdd;
     double power_gating_vcc;
 	//system.core(0-n):3rd level
-	system_core core[64];
-	system_L1Directory L1Directory[64];
-	system_L2Directory L2Directory[64];
-	system_L2 L2[64];
-	system_L3 L3[64];
-    system_NoC NoC[64];
+	system_core core[MAX_NUM_OF_CORE];
+	system_L1Directory L1Directory[MAX_NUM_OF_CORE];
+	system_L2Directory L2Directory[MAX_NUM_OF_CORE];
+	system_L2 L2[MAX_NUM_OF_CORE];
+	system_L3 L3[MAX_NUM_OF_CORE];
+    system_NoC NoC[MAX_NUM_OF_CORE];
     system_mem mem;
 	system_mc mc;
 	system_mc flashc;

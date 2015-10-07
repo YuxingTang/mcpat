@@ -1417,6 +1417,8 @@ void ParseXML::parse(char* filepath)
 }
 void ParseXML::initialize() //Initialize all
 {
+        // TYX :: added core types for further heterogeneous core
+        sys.number_of_core_types=1;
 	//All number_of_* at the level of 'system' 03/21/2009
 	sys.number_of_cores=1;
 	sys.number_of_L1Directories=1;
@@ -1454,10 +1456,11 @@ void ParseXML::initialize() //Initialize all
 	sys.vdd =0;
 	sys.power_gating_vcc = -1;
 	int i,j;
-	for (i=0; i<=63; i++)
+	for (i=0; i<=(MAX_NUM_OF_CORE-1); i++)
 	{
 		sys.core[i].vdd =0;
 		sys.core[i].power_gating_vcc = -1;
+                sys.core[i].core_type = 1;
 		sys.core[i].clock_rate=1;
 		sys.core[i].opt_local = true;
 		sys.core[i].x86 = false;
@@ -1636,7 +1639,7 @@ void ParseXML::initialize() //Initialize all
 	}
 
 	//system_L1directory
-	for (i=0; i<=63; i++)
+	for (i=0; i<=(MAX_NUM_OF_CORE - 1); i++)
 	{
 
 		for (j=0; j<20; j++) sys.L1Directory[i].Dir_config[j]=1;
@@ -1653,7 +1656,7 @@ void ParseXML::initialize() //Initialize all
 		sys.L1Directory[i].duty_cycle =1;
 	}
 	//system_L2directory
-	for (i=0; i<=63; i++)
+	for (i=0; i<=(MAX_NUM_OF_CORE - 1); i++)
 	{
 		for (j=0; j<20; j++) sys.L2Directory[i].Dir_config[j]=1;
 		for (j=0; j<20; j++) sys.L2Directory[i].buffer_sizes[j]=1;
@@ -1668,7 +1671,7 @@ void ParseXML::initialize() //Initialize all
 		sys.L2Directory[i].write_accesses=1;
 		sys.L2Directory[i].duty_cycle =1;
 	}
-	for (i=0; i<=63; i++)
+	for (i=0; i<=(MAX_NUM_OF_CORE - 1); i++)
 	{
 		//system_L2
 		for (j=0; j<20; j++) sys.L2[i].L2_config[j]=1;
@@ -1708,7 +1711,7 @@ void ParseXML::initialize() //Initialize all
 		sys.L2[i].homenode_write_misses=1;
 		sys.L2[i].dir_duty_cycle=1;
 	}
-	for (i=0; i<=63; i++)
+	for (i=0; i<=(MAX_NUM_OF_CORE -1); i++)
 	{
 		//system_L3
 		for (j=0; j<20; j++) sys.L3[i].L3_config[j]=1;
@@ -1749,7 +1752,7 @@ void ParseXML::initialize() //Initialize all
 		sys.L3[i].dir_duty_cycle=1;
 	}
 	//system_NoC
-	for (i=0; i<=63; i++)
+	for (i=0; i<=(MAX_NUM_OF_CORE - 1); i++)
 	{
 		sys.NoC[i].clockrate=1;
 		sys.NoC[i].type=true;
