@@ -132,11 +132,11 @@ void init_tech_params(double technology, bool is_tag)
        exit(0);
     }
   }
-//  else if (technology < 17 && technology > 15)
-//  {
-//    tech_lo = 16;
-//    tech_hi = 16;
-//  }
+  else if (technology < 17 && technology > 15)
+  {
+    tech_lo = 16;
+    tech_hi = 16;
+  }
   else if (technology < 180 && technology > 90)
     {
       tech_lo = 180;
@@ -162,11 +162,11 @@ void init_tech_params(double technology, bool is_tag)
       tech_lo = 32;
       tech_hi = 22;
     }
-//  else if (technology < 22 && technology > 16)
-//    {
-//      tech_lo = 22;
-//      tech_hi = 16;
-//    }
+  else if (technology < 22 && technology > 16)
+    {
+      tech_lo = 22;
+      tech_hi = 16;
+    }
       else
     {
   	  cout<<"Invalid technology nodes"<<endl;
@@ -1584,10 +1584,15 @@ void init_tech_params(double technology, bool is_tag)
     	}
 
     if(tech == 16){
+        SENSE_AMP_D = .02e-9;   // s FIXME: TYX
+        SENSE_AMP_P = 1.9e-15;  // J FIXME: TYX
     	//For 2019, MPU/ASIC stagger-contacted M1 half-pitch is 16 nm (so this is 16 nm
     	//technology i.e. FEATURESIZE = 0.016). Using the DG process numbers for HP.
     	//16 nm HP
     	vdd[0] = 0.7;
+        if(tech_hi == tech_lo)
+          vdd_real[0] = g_ip->specific_hp_vdd ? g_ip->hp_Vdd : vdd[0];//TODO FIXME: TYX if no such 16nm calculation will be broken, but add this 20nm calculation will be broken
+        alpha_power_law[0] = 1.15;
     	Lphy[0] = 0.006;//Lphy is the physical gate-length.
     	Lelec[0] = 0.00315;//Lelec is the electrical gate-length.
     	t_ox[0] = 0.5e-3;//micron
@@ -1631,49 +1636,51 @@ void init_tech_params(double technology, bool is_tag)
         I_g_on_n[0][90] = 1.07e-9;
         I_g_on_n[0][100] = 1.07e-9;
 
-//    	//16 nm LSTP DG
-//    	vdd[1] = 0.8;
-//    	Lphy[1] = 0.014;
-//    	Lelec[1] = 0.008;//Lelec is the electrical gate-length.
-//    	t_ox[1] = 1.1e-3;//micron
-//    	v_th[1] = 0.40126;//V
-//    	c_ox[1] = 2.30e-14;//F/micron2
-//    	mobility_eff[1] =  738.09 * (1e-2 * 1e6 * 1e-2 * 1e6); //micron2 / Vs
-//    	Vdsat[1] = 6.64e-2; //V/micron
-//    	c_g_ideal[1] = 3.22e-16;//F/micron
-//    	c_fringe[1] = 0.008e-15;
-//    	c_junc[1] = 0;//F/micron2
-//    	I_on_n[1] = 727.6e-6;//A/micron
-//    	I_on_p[1] = I_on_n[1] / 2;
-//    	nmos_effective_resistance_multiplier = 1.99;
-//    	n_to_p_eff_curr_drv_ratio[1] = 2;
-//    	gmp_to_gmn_multiplier[1] = 0.99;
-//    	Rnchannelon[1] = nmos_effective_resistance_multiplier * vdd[1] / I_on_n[1];//ohm-micron
-//    	Rpchannelon[1] = n_to_p_eff_curr_drv_ratio[1] * Rnchannelon[1];//ohm-micron
-//    	I_off_n[1][0] = 2.43e-11;
-//    	I_off_n[1][10] = 4.85e-11;
-//    	I_off_n[1][20] = 9.68e-11;
-//    	I_off_n[1][30] = 1.94e-10;
-//    	I_off_n[1][40] = 3.87e-10;
-//    	I_off_n[1][50] = 7.73e-10;
-//    	I_off_n[1][60] = 3.55e-10;
-//    	I_off_n[1][70] = 3.09e-9;
-//    	I_off_n[1][80] = 6.19e-9;
-//    	I_off_n[1][90] = 1.24e-8;
-//    	I_off_n[1][100]= 2.48e-8;
-//
-//    	//    for 22nm LSTP HP
-//    	I_g_on_n[1][0]  = 4.51e-10;//A/micron
-//    	I_g_on_n[1][10] = 4.51e-10;
-//    	I_g_on_n[1][20] = 4.51e-10;
-//    	I_g_on_n[1][30] = 4.51e-10;
-//    	I_g_on_n[1][40] = 4.51e-10;
-//    	I_g_on_n[1][50] = 4.51e-10;
-//    	I_g_on_n[1][60] = 4.51e-10;
-//    	I_g_on_n[1][70] = 4.51e-10;
-//    	I_g_on_n[1][80] = 4.51e-10;
-//    	I_g_on_n[1][90] = 4.51e-10;
-//    	I_g_on_n[1][100] = 4.51e-10;
+    	//16 nm LSTP DG
+    	vdd[1] = 0.8;
+    	vdd_real[1] = g_ip->specific_lstp_vdd ? g_ip->lstp_Vdd : vdd[1];
+    	alpha_power_law[1] = 1.19;
+    	Lphy[1] = 0.014;
+    	Lelec[1] = 0.008;//Lelec is the electrical gate-length.
+    	t_ox[1] = 1.1e-3;//micron
+    	v_th[1] = 0.40126;//V
+    	c_ox[1] = 2.30e-14;//F/micron2
+    	mobility_eff[1] =  738.09 * (1e-2 * 1e6 * 1e-2 * 1e6); //micron2 / Vs
+    	Vdsat[1] = 6.64e-2; //V/micron
+    	c_g_ideal[1] = 3.22e-16;//F/micron
+    	c_fringe[1] = 0.008e-15;
+    	c_junc[1] = 0;//F/micron2
+    	I_on_n[1] = 727.6e-6;//A/micron
+    	I_on_p[1] = I_on_n[1] / 2;
+    	nmos_effective_resistance_multiplier = 1.99;
+    	n_to_p_eff_curr_drv_ratio[1] = 2;
+    	gmp_to_gmn_multiplier[1] = 0.99;
+    	Rnchannelon[1] = nmos_effective_resistance_multiplier * vdd[1] / I_on_n[1];//ohm-micron
+    	Rpchannelon[1] = n_to_p_eff_curr_drv_ratio[1] * Rnchannelon[1];//ohm-micron
+    	I_off_n[1][0] = 2.43e-11;
+    	I_off_n[1][10] = 4.85e-11;
+    	I_off_n[1][20] = 9.68e-11;
+    	I_off_n[1][30] = 1.94e-10;
+    	I_off_n[1][40] = 3.87e-10;
+    	I_off_n[1][50] = 7.73e-10;
+    	I_off_n[1][60] = 3.55e-10;
+    	I_off_n[1][70] = 3.09e-9;
+    	I_off_n[1][80] = 6.19e-9;
+    	I_off_n[1][90] = 1.24e-8;
+    	I_off_n[1][100]= 2.48e-8;
+
+    	//    for 22nm LSTP HP
+    	I_g_on_n[1][0]  = 4.51e-10;//A/micron
+    	I_g_on_n[1][10] = 4.51e-10;
+    	I_g_on_n[1][20] = 4.51e-10;
+    	I_g_on_n[1][30] = 4.51e-10;
+    	I_g_on_n[1][40] = 4.51e-10;
+    	I_g_on_n[1][50] = 4.51e-10;
+    	I_g_on_n[1][60] = 4.51e-10;
+    	I_g_on_n[1][70] = 4.51e-10;
+    	I_g_on_n[1][80] = 4.51e-10;
+    	I_g_on_n[1][90] = 4.51e-10;
+    	I_g_on_n[1][100] = 4.51e-10;
 
 
         if (ram_cell_tech_type == 3)
@@ -1989,6 +1996,12 @@ void init_tech_params(double technology, bool is_tag)
 		  || g_tp.sram_cell.Vdd < g_tp.sram_cell.Vdd_default*0.75) && (!g_ip->is_main_mem))
     {
       cerr << "User defined Vdd is too low.\n\n"<< endl;
+      cerr << "TYXdebug g_tp.sram_cell.Vcc_min_default = " << g_tp.sram_cell.Vcc_min_default << endl;
+      cerr << "TYXdebug g_tp.sram_cell.Vdd =" << g_tp.sram_cell.Vdd << endl;
+      cerr << "TYXdebug g_tp.peri_global.Vdd = " << g_tp.peri_global.Vdd << endl;
+      cerr << "TYXdebug g_tp.peri_global.Vdd_default = " << g_tp.peri_global.Vdd_default << endl;
+      cerr << "TYXdebug g_tp.sram_cell.Vdd = " << g_tp.sram_cell.Vdd << endl;
+      cerr << "TYXdebug g_tp.sram_cell.Vdd_default = " << g_tp.sram_cell.Vdd_default << endl << endl;
       exit(0);
     }
 
